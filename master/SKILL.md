@@ -84,6 +84,18 @@ A good brief gives the agent everything to succeed **without giving it ready-mad
 - **Report format**: files changed, commands run with pass/fail, anything it was unsure about or
   deviated on. Ask it to be honest about failures and skipped steps.
 
+**Every brief ends with this brevity instruction**, so workers burn tokens on thinking and code,
+not on talking:
+
+> Work silently. Think and code — do not narrate. No preamble, no explaining what you're about to
+> do, no restating the task, no summary of what you read, no running commentary between tool calls.
+> No markdown headers, bullet-point recaps or congratulatory wrap-ups. Make the edits and run the
+> commands directly. Keep your thinking private and your tool calls free of explanation. Your only
+> prose is the final report, and it is terse: files changed, commands run with pass/fail, and
+> anything you were unsure about or deviated on — a few lines, not an essay. If it all passed and
+> there is nothing to flag, say so in one line. Skip the file contents and the diff; I read those
+> myself.
+
 Background agents are the default. Launch independent chunks together in one message, up to the cap,
 and do not poll. You are notified when they finish. Do not do the same work yourself while waiting.
 Reuse a worker across follow-ups with `SendMessage` when its context is still useful.
@@ -113,6 +125,9 @@ An agent's report is a claim, not proof.
 - The agent cap is absolute. Count running agents before launching more.
 - Sonnet does the coding and shell work. Opus plans, guides, reviews.
 - No ready-made code in briefs.
+- Every brief carries the brevity instruction. Workers think and code silently and report in a few
+  terse lines — no narration, no recaps, no essays. Reviewing the diff yourself is how you check the
+  work, not their prose.
 - Destructive or outward-facing actions (force-push, deleting data, sending messages, publishing)
   are not delegated blindly. Confirm with the user first unless they already authorized it.
 - Keep the user informed in short lines at phase changes, not a running commentary.
