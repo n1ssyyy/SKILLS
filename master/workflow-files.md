@@ -5,10 +5,12 @@ for the master. Workers do not need it.
 
 ## Why `.master/` and not `.claude/`
 
-`.claude/` belongs to the Claude Code harness (settings, hooks, launch config). Mixing the master's
-planning files into it risks collisions and makes them hard to find. `.master/` is its own folder, at
-the project root, readable by any session or any person. Use `.master/` unless the project already
-has an equivalent folder that CLAUDE.md points to; then use that one and say so in `README.md`.
+`.claude/` belongs to the Claude Code harness (settings, hooks, launch config), and other harnesses
+have their own folders (`.codex/`, `.cursor/` and so on). Mixing the master's planning files into one
+of them risks collisions, makes them hard to find, and ties them to one harness. `.master/` is its own
+folder, at the project root, readable by any session on any harness or any person. Use `.master/`
+unless the project already has an equivalent folder that its instruction file (CLAUDE.md, AGENTS.md)
+points to; then use that one and say so in `README.md`.
 
 ## Principles
 
@@ -48,9 +50,10 @@ frontend and `BACKEND-DESIGN.md` for one with no backend.
 ## File by file
 
 ### README.md
-Index of the folder, one line per file. Then: "Master mode: model `<alias>`, agent cap `<N>`." Then
-the relay paragraph (see SKILL.md) so a cold reader understands the system. Update the model and cap
-line when they change.
+Index of the folder, one line per file. Then: "Master mode: worker model `<name>` (on `<harness>`),
+agent cap `<N>`." Then the relay paragraph (see SKILL.md) so a cold reader understands the system.
+Update the model and cap line when they change. The model name is a record of what was used, not a
+setting: each session finds this harness's models again when the mode turns on.
 
 ### REQUESTS.md
 Every message the user sends that asks for something, **word for word**, never paraphrased. Newest at
@@ -73,8 +76,9 @@ or similar. When a TODO becomes a chunk it moves to `PLAN.md` and `WIP.md`; dele
 ### WIP.md
 The live board. One row per running or paused chunk: chunk name, worker (name or id), model, files it
 owns, state (`running`, `blocked`, `in review`, `fixing`), and the last thing you noticed at a
-check-in. Update when a worker launches, when you check in, and when it finishes. Empty means nothing
-is running. After a compaction or crash this file is how you find your place.
+check-in. Update when a worker launches, when you check in, and when it finishes. Every task gets its
+own fresh worker, so a fix round or a follow-up on the same chunk is a new worker: replace the worker
+in the row and note the round. Empty means nothing is running. After a compaction or crash this file is how you find your place.
 
 ### FINISHED.md
 Newest first. Each entry: date, what landed, where (files, commits), and **how it was verified**
@@ -161,7 +165,7 @@ status: open | in progress | done | dropped  -> PLAN: <chunk> / FINISHED: <entry
 # PLAN
 Goal: ...
 ## Phase 1: <name>
-- [todo] <chunk> | files: ... | parallel: yes/no | verify: ...
+- [todo] <chunk> | files: ... | size: ~N tool calls (30-60) | parallel: yes/no | verify: ...
 Order and why: ...
 ```
 
@@ -183,5 +187,7 @@ Your brief is your source of truth. Do not open files in .master/ unless the bri
 cannot proceed without it. Never edit .master/.
 Work silently, think and code, no narration. Final report: files changed, commands run with
 pass/fail, anything unsure. A few lines.
+Work fast: edit tool not scripts, targeted tests only, long commands in the background (no sleep
+loops), stop and report after two timeouts or when the task is far bigger than the brief said.
 Project hard rules: <the ones easy to break>
 ```
